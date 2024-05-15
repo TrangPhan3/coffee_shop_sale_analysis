@@ -2,11 +2,13 @@
 SELECT ROUND(SUM(unit_price * transaction_qty),2) AS total_sale
 FROM transaction
 
+
 -- Calculate total sales for each month
 SELECT EXTRACT(MONTH FROM transaction_date) AS Month,
   ROUND(SUM(unit_price * transaction_qty),2) AS total_sale
 FROM transaction
 GROUP BY Month
+
 
 -- Let's see how sale change each month
 WITH cte1 AS (
@@ -29,6 +31,7 @@ SELECT
 FROM cte1
 ORDER BY Month ASC
 
+
 -- Calculate total sales by Day of Week
 SELECT 
   *, 
@@ -42,6 +45,7 @@ FROM (
 )
 ORDER BY DoW ASC
 
+
 -- Calculate total sales by store location
 SELECT 
   s.store_location AS store_location,
@@ -51,6 +55,7 @@ JOIN store AS s
 ON t.store_id = s.store_id
 GROUP BY store_location
 ORDER BY total_sale DESC
+
 
 -- Report total sales by store location by month
 SELECT *
@@ -68,6 +73,7 @@ PIVOT(
   SUM(total_sale)
   FOR store_location IN("Hell's Kitchen", "Lower Manhattan", "Astoria")
 ) AS pivot
+
 
 -- Sales by product categories in descending order
 WITH cte2 AS (
@@ -91,6 +97,7 @@ FROM (
   )
 ORDER BY total_sale DESC
 
+
 -- Product category sales by month
 SELECT *
 FROM
@@ -108,6 +115,7 @@ PIVOT(
   FOR product_category IN ("Coffee", "Tea", "Bakery", "Drinking Chocolate", "Coffee beans", "Branded", "Loose Tea", "Flavours", "Packaged Chocolate")
 ) AS pivot
 
+
 -- Top 10 product types acquire the highest sale
 SELECT
   p.product_category AS product_category,
@@ -119,6 +127,7 @@ ON t.product_id = p.product_id
 GROUP BY product_category, product_type
 ORDER BY total_sale DESC
 LIMIT 10
+
 
 -- Let's dive a bit further by ranking the quantity sold
 SELECT
@@ -138,11 +147,13 @@ GROUP BY product_category, product_type
 ORDER BY total_sale DESC
 LIMIT 10
 
+
 -- Open and Close Hour
 SELECT 
   MIN(EXTRACT (HOUR FROM transaction_time)) AS open_hour,
   MAX((EXTRACT (HOUR FROM transaction_time) + 1))  AS close_hour
 FROM transaction 
+
 
 -- The busiest hour. 
 SELECT 
@@ -152,6 +163,7 @@ SELECT
 FROM transaction
 GROUP BY hour
 ORDER BY total_quantity DESC
+
 
 -- Unit price sales contribute
 SELECT 
